@@ -1,0 +1,105 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int     @id @default(autoincrement())
+  name     String
+  email    String  @unique
+  password String
+  isAdmin  Boolean @default(false)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  product    Product? @relation(fields: [product_id], references: [id])
+  product_id Int?
+  order      Order?
+}
+
+model Review {
+  id      Int    @id @default(autoincrement())
+  name    String
+  rating  Int
+  comment String
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  product    Product? @relation(fields: [product_id], references: [id])
+  product_id Int?
+}
+
+model Product {
+  id             Int    @id @default(autoincrement())
+  name           String
+  image          String
+  brand          String
+  category       String
+  description    String
+  rating         Int    @default(0)
+  numReviews     Int    @default(0)
+  price          Int    @default(0)
+  count_in_stock Int    @default(0)
+
+  order_items OrderItems?
+  reviews     Review[]
+  user        User[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model Order {
+  id             Int     @id @default(autoincrement())
+  tax_price      Float   @default(0.0)
+  shipping_price Float   @default(0.0)
+  total_price    Float   @default(0.0)
+  is_paid        Boolean @default(false)
+  is_delivered   Boolean @default(false)
+
+  delivered_at DateTime
+  paid_at      DateTime
+
+  order_items OrderItems[]
+
+  shipping_address_id Int             @unique
+  shipping_address    ShippingAddress @relation(fields: [shipping_address_id], references: [id])
+
+  user_id Int  @unique
+  user    User @relation(fields: [user_id], references: [id])
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model OrderItems {
+  id    Int    @id @default(autoincrement())
+  name  String
+  qty   Int
+  image String
+  price Int
+
+  product_id Int     @unique
+  product    Product @relation(fields: [product_id], references: [id])
+
+  order    Order? @relation(fields: [order_id], references: [id])
+  order_id Int?
+}
+
+model ShippingAddress {
+  id          Int    @id @default(autoincrement())
+  address     String
+  city        String
+  postal_code String
+  country     String
+
+  Order Order?
+}
