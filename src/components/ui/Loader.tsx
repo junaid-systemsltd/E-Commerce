@@ -3,8 +3,8 @@ import { Spinner } from "react-bootstrap";
 
 export default function Loader() {
   return (
-    <Spinner
-      animation="border"
+    <div
+      className="spinner-border"
       role="status"
       style={{
         width: "100px",
@@ -14,6 +14,6 @@ export default function Loader() {
       }}
     >
       <span className="visually-hidden">Loading...</span>
-    </Spinner>
+    </div>
   );
 }

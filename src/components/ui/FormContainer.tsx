@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { Col, Container, Row } from "react-bootstrap";
+import { Col, Row, Container } from "@components/ui";
 
 export default function FormContainer({ children }: { children: ReactNode }) {
   return (

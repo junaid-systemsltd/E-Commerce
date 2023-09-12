@@ -1,3 +1,4 @@
+import { Review } from "@prisma/client";
 export interface IProduct {
   id: number;
   name: string;
@@ -9,11 +10,12 @@ export interface IProduct {
   numReviews: number;
   price: number;
   count_in_stock: number;
+  reviews?: Review;
 }
 
 export type ProductDetailType = {
   params: {
-    slug: string;
+    slug?: string;
   };
 };
 

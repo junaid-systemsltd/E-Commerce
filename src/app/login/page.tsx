@@ -1,7 +1,7 @@
 "use client";
 
-import FormContainer from "@/components/FormContainer";
-import Loader from "@/components/Loader";
+import FormContainer from "@/components/ui/FormContainer";
+import Loader from "@/components/ui/Loader";
 import Link from "next/link";
 import React, { SyntheticEvent, useState } from "react";
 import { Button, Col, Form, Row } from "react-bootstrap";
@@ -9,7 +9,7 @@ import { Button, Col, Form, Row } from "react-bootstrap";
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const submitHandler = (e: SyntheticEvent) => {
     e.preventDefault();

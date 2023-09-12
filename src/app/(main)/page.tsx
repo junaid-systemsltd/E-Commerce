@@ -1,26 +1,11 @@
-import { IProduct } from "@/types/product";
-import Product from "./components/Product";
-import { fetchProductsList } from "@/services/products";
+import { Suspense } from "react";
+import { Loader } from "@components/ui";
+import LatestProducts from "@app/(main)/components/LatestProducts";
 
-export default async function Home() {
-  const products = await fetchProductsList();
+export default async function HomeScreen() {
   return (
-    <>
-      <h1>Latest Products</h1>
-      {products?.length > 0 && (
-        <>
-          <div className="row">
-            {products.map((product: IProduct) => (
-              <div
-                className="col-sm-12 col-md-6 col-lg-4 col-xl-3"
-                key={product.id}
-              >
-                <Product {...product} />
-              </div>
-            ))}
-          </div>
-        </>
-      )}
-    </>
+    <Suspense fallback={<Loader />}>
+      <LatestProducts />
+    </Suspense>
   );
 }

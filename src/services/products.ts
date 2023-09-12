@@ -1,4 +1,5 @@
 import prisma from "@/helpers/prisma";
+
 import { IProduct } from "@/types/product";
 
 export const fetchProduct = async (slug: string): Promise<any> => {
@@ -16,11 +17,13 @@ export const fetchProduct = async (slug: string): Promise<any> => {
         numReviews: true,
         price: true,
         count_in_stock: true,
+        reviews: true,
       },
     })
     .finally(() => {
       prisma.$disconnect();
     });
+
   return product;
 };
 
