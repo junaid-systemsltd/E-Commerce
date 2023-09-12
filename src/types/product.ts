@@ -11,6 +11,12 @@ export interface IProduct {
   count_in_stock: number;
 }
 
+export type ProductDetailType = {
+  params: {
+    slug: string;
+  };
+};
+
 export type RatingType = {
   value: number;
   text: string;
