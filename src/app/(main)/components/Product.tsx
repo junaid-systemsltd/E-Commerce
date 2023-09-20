@@ -1,9 +1,10 @@
 "use client";
 
-import Rating from "@/components/Rating";
-import { IProduct } from "@/types/product";
 import Link from "next/link";
 import { Card } from "react-bootstrap";
+
+import Rating from "@/components/modules/rating";
+import { IProduct } from "@/types/product";
 
 export default function Product(props: IProduct) {
   const { id, image, name, rating, numReviews, price } = props;

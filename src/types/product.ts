@@ -21,6 +21,8 @@ export type ProductDetailType = {
 
 export type RatingType = {
   value: number;
-  text: string;
+  text?: string;
   color?: string;
 };
+
+export type ReviewType = Review;

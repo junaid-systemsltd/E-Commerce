@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { Col, Row, Container } from "@components/ui";
+import { Col, Row, Container } from "@/components/elements";
 
 export default function FormContainer({ children }: { children: ReactNode }) {
   return (

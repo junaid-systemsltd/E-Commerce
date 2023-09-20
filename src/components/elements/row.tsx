@@ -5,6 +5,6 @@ interface RowProps {
   className?: string;
 }
 
-export default function Row({ children, className }: RowProps) {
+export default function Row({ children, className = "" }: RowProps) {
   return <div className={`row ${className}`}>{children}</div>;
 }

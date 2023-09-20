@@ -1,4 +1,4 @@
-import prisma from "@/helpers/prisma";
+import prisma from "@/core/utils/prisma";
 
 import { IProduct } from "@/types/product";
 
