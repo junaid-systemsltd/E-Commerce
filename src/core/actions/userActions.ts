@@ -7,20 +7,50 @@ import { cookies } from 'next/headers';
 // Modules
 import prisma from '@/core/utils/prisma';
 import hasPassword from '@/core/utils/hashPassword';
+import {
+    validateLoginUser,
+    validateRegisterUser,
+} from '../validations/user.validation';
+import extractFormData from '../utils/extractFormData';
+import { UserRegisterFields } from '@/types/user';
+
+export async function registerAction(formData: FormData) {
+    try {
+        const data: UserRegisterFields = extractFormData(formData);
+
+        const { error } = validateRegisterUser(data);
+
+        if (error) {
+            return { status: false, errors: error.details };
+        }
+
+        const user = await prisma.user.create({ data });
+
+        if (user) {
+            return {
+                status: true,
+                message: 'Successfully Logged in',
+                user: user,
+                errors: [],
+            };
+        }
+
+        return {
+            status: false,
+            errors: [{ message: 'invalid input credentials' }],
+        };
+    } catch (e) {
+        console.log(e);
+        return { status: false, errors: [{ message: 'There was an error.' }] };
+    }
+}
 
 export async function loginAction(formData: FormData) {
-    const schema = Joi.object({
-        email: Joi.string().email().required(),
-        password: Joi.string().min(4).max(10).required(),
-    });
     try {
-        const email = formData.get('email')?.toString() || '';
-        const password = formData.get('password')?.toString() || '';
+        const data = extractFormData(formData);
+        const { email, password } = data;
 
-        const { error } = schema.validate(
-            { email, password },
-            { abortEarly: false },
-        );
+        const { error } = validateLoginUser(data);
 
         if (error) {
             return { status: false, errors: error.details };
@@ -57,7 +87,6 @@ export async function loginAction(formData: FormData) {
 
 export async function logoutAction() {
     cookies().delete('user');
-    console.log('CALLED LOGOUT');
 }
 
 function exclude(user: any, keys: string[]) {

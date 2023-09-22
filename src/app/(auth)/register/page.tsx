@@ -1,6 +1,7 @@
 'use client';
 
-import { FormContainer, SubmitButton } from '@/components/elements';
+import { FormContainer, Message, SubmitButton } from '@/components/elements';
+import { registerAction } from '@/core/actions/userActions';
 import Link from 'next/link';
 import { useState } from 'react';
 import { Col, Form, Row } from 'react-bootstrap';
@@ -8,13 +9,29 @@ import { Col, Form, Row } from 'react-bootstrap';
 export default function Register() {
     const [errors, setErrors] = useState<any>(null);
 
-    const actionHandler = () => {};
+    const submitHandler = async (formData: FormData) => {
+        try {
+            const response = await registerAction(formData);
+
+            if (!response?.status) return setErrors(response?.errors);
+
+            const { message = '', user } = response;
+        } catch (e: any) {}
+    };
 
     return (
         <FormContainer>
             <h1>Register</h1>
 
-            <Form action={actionHandler}>
+            {errors && (
+                <Message variant={'danger'}>
+                    {errors.map((error: any, index: number) => (
+                        <li key={index}>{error.message}</li>
+                    ))}
+                </Message>
+            )}
+
+            <Form action={submitHandler}>
                 {/* Name Field */}
                 <Form.Group controlId="name">
                     <Form.Label>Name:</Form.Label>
@@ -42,7 +59,7 @@ export default function Register() {
                     ></Form.Control>
                 </Form.Group>
                 {/* Confirm Password */}
-                <Form.Group className="pt-3" controlId="password">
+                <Form.Group className="pt-3" controlId="confirmPassword">
                     <Form.Label>Confirm Password:</Form.Label>
                     <Form.Control
                         name="confirmPassword"
@@ -50,7 +67,6 @@ export default function Register() {
                         placeholder="Enter Confirm password"
                     ></Form.Control>
                 </Form.Group>
-
                 <SubmitButton btnText="Register" loadingText="Registering" />
             </Form>
             <Row className="py-3">

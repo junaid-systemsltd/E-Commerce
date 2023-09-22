@@ -8,9 +8,9 @@ import { useRouter } from 'next/navigation';
 import { Button, Col, Form, Row } from 'react-bootstrap';
 
 // Modules
-import { loginAction } from '../actions';
 import { useAuth } from '@/contexts/UserContext';
 import { FormContainer, Message, SubmitButton } from '@/components/elements';
+import { loginAction } from '@/core/actions/userActions';
 
 export default function Login() {
     const { setUser } = useAuth();

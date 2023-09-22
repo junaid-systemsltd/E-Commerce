@@ -20,7 +20,7 @@ export default function Error({
     return (
         <div>
             <Alert variant="danger" dismissible>
-                <Alert.Heading>Fetching Product</Alert.Heading>
+                <Alert.Heading>Error:</Alert.Heading>
                 {error.message}
             </Alert>
             <div className="d-flex gap-2">
