@@ -58,6 +58,40 @@ const Header = () => {
                                     <i className="fas fa-user" /> Sign In
                                 </Link>
                             )}
+                            {(true || user?.isAdmin) && (
+                                <NavDropdown
+                                    title="Admin"
+                                    id="admin_menu"
+                                    menuVariant="dark"
+                                >
+                                    <NavDropdown.Item
+                                        as={Link}
+                                        href="/admin/users"
+                                        role="button"
+                                    >
+                                        {' '}
+                                        Users{' '}
+                                    </NavDropdown.Item>
+
+                                    <NavDropdown.Item
+                                        as={Link}
+                                        href="/admin/products"
+                                        role="button"
+                                    >
+                                        {' '}
+                                        Products{' '}
+                                    </NavDropdown.Item>
+
+                                    <NavDropdown.Item
+                                        as={Link}
+                                        href="/admin/orders"
+                                        role="button"
+                                    >
+                                        {' '}
+                                        Orders{' '}
+                                    </NavDropdown.Item>
+                                </NavDropdown>
+                            )}
                         </Nav>
                     </Navbar.Collapse>
                 </Container>
