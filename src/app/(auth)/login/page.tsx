@@ -6,12 +6,11 @@ import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { Button, Col, Form, Row } from 'react-bootstrap';
-import { experimental_useFormStatus as useFormStatus } from 'react-dom';
 
 // Modules
 import { loginAction } from '../actions';
 import { useAuth } from '@/contexts/UserContext';
-import { FormContainer, Message } from '@/components/elements';
+import { FormContainer, Message, SubmitButton } from '@/components/elements';
 
 export default function Login() {
     const { setUser } = useAuth();
@@ -65,7 +64,7 @@ export default function Login() {
                         placeholder="Enter password"
                     ></Form.Control>
                 </Form.Group>
-                <SubmitButton />
+                <SubmitButton btnText="Sign in" loadingText="Signing in" />
             </Form>
             <Row className="py-3">
                 <Col>
@@ -73,20 +72,5 @@ export default function Login() {
                 </Col>
             </Row>
         </FormContainer>
-    );
-}
-
-/* Separate Submit Button due to  useFormStatus Hook*/
-function SubmitButton() {
-    const { pending } = useFormStatus();
-    return (
-        <Button
-            className="my-3 w-100"
-            type="submit"
-            variant="primary"
-            disabled={pending}
-        >
-            {pending ? 'Signing in' : 'Sign in'}
-        </Button>
     );
 }
