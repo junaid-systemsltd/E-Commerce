@@ -18,6 +18,14 @@ export type UserRegisterFields = {
     confirmPassword?: string;
 };
 
+export type ProfileUpdateFields = {
+    id: string;
+    name: string;
+    email: string;
+    password?: string;
+    confirmPassword?: string;
+};
+
 export type UserState = {
     user: User;
     setUser(user: User | null): void;

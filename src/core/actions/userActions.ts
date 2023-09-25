@@ -9,10 +9,11 @@ import prisma from '@/core/utils/prisma';
 import hasPassword from '@/core/utils/hashPassword';
 import {
     validateLoginUser,
+    validateProfileUpdateUser,
     validateRegisterUser,
 } from '../validations/user.validation';
 import extractFormData from '../utils/extractFormData';
-import { UserRegisterFields } from '@/types/user';
+import { ProfileUpdateFields, UserRegisterFields } from '@/types/user';
 
 export async function registerAction(formData: FormData) {
     try {
@@ -39,6 +40,39 @@ export async function registerAction(formData: FormData) {
             status: false,
             errors: [{ message: 'invalid input credentials' }],
         };
+    } catch (e) {
+        console.log(e);
+        return { status: false, errors: [{ message: 'There was an error.' }] };
+    }
+}
+
+export async function profileUpdateAction(formData: FormData) {
+    try {
+        const data: ProfileUpdateFields = extractFormData(formData);
+
+        const { error } = validateProfileUpdateUser(data);
+
+        if (error) {
+            return { status: false, errors: error.details };
+        }
+
+        const { id, ...updateFields } = data;
+        const user = await prisma.user.update({
+            where: { id: Number(id) },
+            data: { ...updateFields },
+        });
+
+        console.log({ user });
+
+        if (user) {
+            cookies().set('user', JSON.stringify(user));
+            return {
+                status: true,
+                message: 'Profile updated',
+                user: exclude(user, ['password']),
+                errors: [],
+            };
+        }
     } catch (e) {
         console.log(e);
         return { status: false, errors: [{ message: 'There was an error.' }] };
