@@ -27,21 +27,30 @@ type ShippingAddress = {
     country: string;
 };
 
-type useCartFunc = {
-    cartItems: CartItem[];
-    shippingAddress: ShippingAddress;
-    paymentMethod: PaymentMethods;
-    loading: boolean;
-    addToCart: (id: string, qty: number) => Promise<void>;
-    removeFromCart: (id: string) => Promise<void>;
-    saveShippingAddress: (data: any) => void;
-    savePaymentMethod: (paymentMethod: PaymentMethods) => void;
-};
-
 export enum PaymentMethods {
     Paypal,
     Stripe,
 }
+
+type Prices = {
+    itemsPrice: number | string;
+    shippingPrice: number | string;
+    taxPrice: number | string;
+    totalPrice: number | string;
+};
+
+type useCartFunc = {
+    prices: Prices;
+    loading: boolean;
+    cartItems: CartItem[];
+    paymentMethod: PaymentMethods;
+    shippingAddress: ShippingAddress;
+    setPrices: (prices: Prices) => void;
+    saveShippingAddress: (data: any) => void;
+    removeFromCart: (id: string) => Promise<void>;
+    addToCart: (id: string, qty: number) => Promise<void>;
+    savePaymentMethod: (paymentMethod: PaymentMethods) => void;
+};
 
 export default function CartProvider({ children }: CartProviderProps) {
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
@@ -53,6 +62,13 @@ export default function CartProvider({ children }: CartProviderProps) {
     });
     const [paymentMethod, setPaymentMethod] = useState<PaymentMethods>();
     const [loading, setLoading] = useState(false);
+
+    const [prices, setPrices] = useState<Prices>({
+        itemsPrice: 0,
+        shippingPrice: 0,
+        taxPrice: 0,
+        totalPrice: 0,
+    });
 
     // Action Methods
     const addToCart = async (id: number, qty: number) => {
@@ -101,14 +117,16 @@ export default function CartProvider({ children }: CartProviderProps) {
     return (
         <CartContext.Provider
             value={{
-                cartItems,
-                shippingAddress,
-                paymentMethod,
+                prices,
                 loading,
+                cartItems,
+                paymentMethod,
+                shippingAddress,
                 addToCart,
+                setPrices,
                 removeFromCart,
-                saveShippingAddress,
                 savePaymentMethod,
+                saveShippingAddress,
             }}
         >
             {children}

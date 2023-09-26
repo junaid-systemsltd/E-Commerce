@@ -16,7 +16,7 @@ export default function Payment() {
     const submitHandler = (e: any) => {
         e.preventDefault();
         savePaymentMethod(paymentMethod);
-        router.push('/placeorder');
+        router.push('/place-order');
     };
 
     return (
