@@ -30,13 +30,18 @@ type ShippingAddress = {
 type useCartFunc = {
     cartItems: CartItem[];
     shippingAddress: ShippingAddress;
-    paymentMethod: any;
+    paymentMethod: PaymentMethods;
     loading: boolean;
     addToCart: (id: string, qty: number) => Promise<void>;
     removeFromCart: (id: string) => Promise<void>;
     saveShippingAddress: (data: any) => void;
-    savePaymentMethod: () => void;
+    savePaymentMethod: (paymentMethod: PaymentMethods) => void;
 };
+
+export enum PaymentMethods {
+    Paypal,
+    Stripe,
+}
 
 export default function CartProvider({ children }: CartProviderProps) {
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
@@ -46,7 +51,7 @@ export default function CartProvider({ children }: CartProviderProps) {
         postalCode: '',
         country: '',
     });
-    const [paymentMethod, setPaymentMethod] = useState();
+    const [paymentMethod, setPaymentMethod] = useState<PaymentMethods>();
     const [loading, setLoading] = useState(false);
 
     // Action Methods

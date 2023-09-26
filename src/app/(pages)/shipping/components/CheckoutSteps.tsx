@@ -27,7 +27,7 @@ export default function CheckoutSteps({ step1, step2, step3, step4 }: any) {
                 <Nav.Item>
                     {step3 ? (
                         <Link className="nav-link" href="/payment">
-                            Payment
+                            <strong>Payment</strong>
                         </Link>
                     ) : (
                         <Nav.Link disabled> Payment </Nav.Link>
@@ -36,7 +36,7 @@ export default function CheckoutSteps({ step1, step2, step3, step4 }: any) {
                 <Nav.Item>
                     {step4 ? (
                         <Link className="nav-link" href="/placeorder">
-                            Place Order
+                            <strong>Place Order</strong>
                         </Link>
                     ) : (
                         <Nav.Link disabled> Place Order </Nav.Link>
