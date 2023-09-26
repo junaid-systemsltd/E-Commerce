@@ -7,25 +7,24 @@ import {
     Card,
     Col,
     Form,
+    FormSelect,
     Image,
     ListGroup,
     Row,
 } from 'react-bootstrap';
+import { useRouter } from 'next/navigation';
 // Modules
 import { Message } from '@/components/elements';
 import { useCart } from '@/contexts/CartContext';
-import useQueryParams from '@/core/hooks/useQueryParams';
-import Spinner from '@/components/elements/spinner';
-import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/UserContext';
+import Spinner from '@/components/elements/spinner';
+import useQueryParams from '@/core/hooks/useQueryParams';
 
 export default function Cart() {
     const { cartItems, addToCart, removeFromCart, loading } = useCart();
     const { setQueryParams, queryParams } = useQueryParams();
     const router = useRouter();
     const { user } = useAuth();
-
-    console.log({ cartItems });
 
     useEffect(() => {
         (async () => {
@@ -63,7 +62,7 @@ export default function Cart() {
                                         key={index}
                                         className="mt-2"
                                     >
-                                        <Row>
+                                        <Row className="align-items-center">
                                             <Col md={2}>
                                                 <Image
                                                     src={item.image}
@@ -72,7 +71,7 @@ export default function Cart() {
                                                     rounded
                                                 />
                                             </Col>
-                                            <Col md={3}>
+                                            <Col md={4}>
                                                 <Link
                                                     href={`/product/${item.product}`}
                                                 >
@@ -81,9 +80,9 @@ export default function Cart() {
                                             </Col>
                                             <Col md={2}>${item.price}</Col>
                                             <Col md={2}>
-                                                <Form.Control
+                                                <FormSelect
                                                     as="select"
-                                                    value={item.qty}
+                                                    value={Number(item.qty)}
                                                     onChange={e => {
                                                         addToCart(
                                                             item.product.toString(),
@@ -105,7 +104,7 @@ export default function Cart() {
                                                             {x + 1}
                                                         </option>
                                                     ))}
-                                                </Form.Control>
+                                                </FormSelect>
                                             </Col>
                                             <Col md={2}>
                                                 <Button

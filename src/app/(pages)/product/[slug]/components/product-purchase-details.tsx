@@ -9,6 +9,7 @@ import {
 import { IProduct } from '@/types/product';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { FormSelect } from 'react-bootstrap';
 
 type ProductPurchaseDetailsProps = {
     product: IProduct;
@@ -29,7 +30,7 @@ export default function ProductPurchaseDetails({
     return (
         <>
             <Col md={3}>
-                <ListGroup>
+                <ListGroup variant="flush">
                     <ListGroupItem>
                         <Row>
                             <Col> Price: </Col>
@@ -57,7 +58,7 @@ export default function ProductPurchaseDetails({
                             <Row>
                                 <Col>Qty:</Col>
                                 <Col>
-                                    <select
+                                    <FormSelect
                                         className="form-control"
                                         value={qty}
                                         onChange={(event: any) =>
@@ -73,7 +74,7 @@ export default function ProductPurchaseDetails({
                                                 {x + 1}
                                             </option>
                                         ))}
-                                    </select>
+                                    </FormSelect>
                                 </Col>
                             </Row>
                         </ListGroupItem>
