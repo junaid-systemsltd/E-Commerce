@@ -1,10 +1,12 @@
 'use client';
 
-import { FormContainer, Message, SubmitButton } from '@/components/elements';
-import { registerAction } from '@/core/actions/userActions';
+// Libs
 import Link from 'next/link';
 import { useState } from 'react';
 import { Col, Form, Row } from 'react-bootstrap';
+// Modules
+import { registerAction } from '@/core/actions/userActions';
+import { FormContainer, Message, SubmitButton } from '@/components/elements';
 
 export default function Register() {
     const [errors, setErrors] = useState<any>(null);

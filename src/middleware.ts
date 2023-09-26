@@ -9,7 +9,7 @@ export default function middleware(req: NextRequest) {
         const user = JSON.parse(userCookie?.value);
 
         // Handling Login & Register Routes for logged in User
-        if (['/login', '/register'].includes(pathname)) {
+        if (pathname.startsWith('/login') || pathname.startsWith('/register')) {
             return NextResponse.redirect(new URL('/', req.url));
         }
 

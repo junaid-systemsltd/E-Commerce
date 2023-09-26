@@ -16,8 +16,8 @@ export default function UserList({ users }: any) {
                 </tr>
             </thead>
             <tbody>
-                {users.map((user: any) => (
-                    <UserListItem {...user} />
+                {users.map((user: any, index: number) => (
+                    <UserListItem key={index} {...user} />
                 ))}
             </tbody>
         </Table>

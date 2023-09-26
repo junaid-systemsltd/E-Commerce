@@ -8,6 +8,7 @@ import { Toaster } from 'react-hot-toast';
 // Modules
 import Header from '@/components/modules/header';
 import { Container } from '@/components/elements';
+import CartProvider from '@/contexts/CartContext';
 import UserContextProvider from '@/contexts/UserContext';
 
 // CSS
@@ -31,10 +32,12 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <html lang="en">
             <body>
                 <UserContextProvider cookie={userCookie}>
-                    <Header />
-                    <main className="py-3">
-                        <Container>{children}</Container>
-                    </main>
+                    <CartProvider>
+                        <Header />
+                        <main className="py-3">
+                            <Container>{children}</Container>
+                        </main>
+                    </CartProvider>
                 </UserContextProvider>
                 <Toaster />
             </body>
