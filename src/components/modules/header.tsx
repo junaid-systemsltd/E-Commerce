@@ -58,7 +58,7 @@ const Header = () => {
                                     <i className="fas fa-user" /> Sign In
                                 </Link>
                             )}
-                            {(true || user?.isAdmin) && (
+                            {user?.isAdmin && (
                                 <NavDropdown
                                     title="Admin"
                                     id="admin_menu"
