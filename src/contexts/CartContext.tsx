@@ -20,20 +20,32 @@ type CartItem = {
     qty: number;
 };
 
+type ShippingAddress = {
+    address: string;
+    city: string;
+    postalCode: string;
+    country: string;
+};
+
 type useCartFunc = {
     cartItems: CartItem[];
-    shippingAddress: any;
+    shippingAddress: ShippingAddress;
     paymentMethod: any;
     loading: boolean;
     addToCart: (id: string, qty: number) => Promise<void>;
     removeFromCart: (id: string) => Promise<void>;
-    cartSaveShippingAddress: () => void;
+    saveShippingAddress: (data: any) => void;
     savePaymentMethod: () => void;
 };
 
 export default function CartProvider({ children }: CartProviderProps) {
     const [cartItems, setCartItems] = useState<CartItem[]>([]);
-    const [shippingAddress, setShippingAddress] = useState({});
+    const [shippingAddress, setShippingAddress] = useState<ShippingAddress>({
+        address: '',
+        city: '',
+        postalCode: '',
+        country: '',
+    });
     const [paymentMethod, setPaymentMethod] = useState();
     const [loading, setLoading] = useState(false);
 
@@ -73,7 +85,7 @@ export default function CartProvider({ children }: CartProviderProps) {
         // save cart in cookies
     };
 
-    const cartSaveShippingAddress = (data: any) => {
+    const saveShippingAddress = (data: any) => {
         setShippingAddress(data);
     };
 
@@ -90,7 +102,7 @@ export default function CartProvider({ children }: CartProviderProps) {
                 loading,
                 addToCart,
                 removeFromCart,
-                cartSaveShippingAddress,
+                saveShippingAddress,
                 savePaymentMethod,
             }}
         >
