@@ -3,8 +3,9 @@ import { FormContainer } from '@/components/elements';
 import CheckoutSteps from '../shipping/components/CheckoutSteps';
 import { Button, Col, Form } from 'react-bootstrap';
 import { useState } from 'react';
-import { PaymentMethods, useCart } from '@/contexts/CartContext';
+import { useCart } from '@/contexts/CartContext';
 import { useRouter } from 'next/navigation';
+import { PaymentMethods } from '@/types/cart';
 
 export default function Payment() {
     const { savePaymentMethod, shippingAddress } = useCart();
@@ -33,7 +34,7 @@ export default function Payment() {
                                 label="Paypal or Credit Card"
                                 id="Paypal"
                                 name="paymentMethod"
-                                value="Paypal"
+                                value={PaymentMethods.Paypal}
                                 checked
                                 onChange={e =>
                                     setPaymentMethod(PaymentMethods.Paypal)
@@ -44,7 +45,7 @@ export default function Payment() {
                                 label="Stripe or Credit Card"
                                 id="Stripe"
                                 name="paymentMethod"
-                                value="Stripe"
+                                value={PaymentMethods.Stripe}
                                 onChange={e =>
                                     setPaymentMethod(PaymentMethods.Stripe)
                                 }

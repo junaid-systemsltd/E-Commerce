@@ -62,7 +62,6 @@ export async function profileUpdateAction(formData: FormData) {
             data: { ...updateFields },
         });
 
-        console.log({ user });
 
         if (user) {
             cookies().set('user', JSON.stringify(user));

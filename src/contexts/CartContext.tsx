@@ -1,7 +1,18 @@
 'use client';
 
+import {
+    saveCartsItemsInCookies,
+    savePaymentMethodInCookie,
+    saveShippingAddressInCookies,
+} from '@/core/actions/cartActions';
 import { fetchProduct } from '@/core/services/products';
-// import { fetchProduct } from '@/core/services/products';
+import {
+    CartItem,
+    PaymentMethods,
+    ShippingAddress,
+    Prices,
+    UseCart,
+} from '@/types/cart';
 import { IProduct } from '@/types/product';
 import { ReactNode, createContext, useState, useContext } from 'react';
 
@@ -9,59 +20,27 @@ const CartContext = createContext<any>({});
 
 type CartProviderProps = {
     children: ReactNode;
+    cookie: {
+        cartItems: any;
+        shippingAddress: any;
+        paymentMethod: any;
+    };
 };
 
-type CartItem = {
-    product: number;
-    name: string;
-    image: string;
-    price: number;
-    count_in_stock: number;
-    qty: number;
-};
+export default function CartProvider({ children, cookie }: CartProviderProps) {
+    const [cartItems, setCartItems] = useState<CartItem[]>(
+        getInitialCartItems(cookie),
+    );
 
-type ShippingAddress = {
-    address: string;
-    city: string;
-    postalCode: string;
-    country: string;
-};
+    const [shippingAddress, setShippingAddress] = useState<ShippingAddress>(
+        getInitialShippingAddress(cookie),
+    );
 
-export enum PaymentMethods {
-    Paypal,
-    Stripe,
-}
-
-type Prices = {
-    itemsPrice: number | string;
-    shippingPrice: number | string;
-    taxPrice: number | string;
-    totalPrice: number | string;
-};
-
-type useCartFunc = {
-    prices: Prices;
-    loading: boolean;
-    cartItems: CartItem[];
-    paymentMethod: PaymentMethods;
-    shippingAddress: ShippingAddress;
-    setPrices: (prices: Prices) => void;
-    saveShippingAddress: (data: any) => void;
-    removeFromCart: (id: string) => Promise<void>;
-    addToCart: (id: string, qty: number) => Promise<void>;
-    savePaymentMethod: (paymentMethod: PaymentMethods) => void;
-};
-
-export default function CartProvider({ children }: CartProviderProps) {
-    const [cartItems, setCartItems] = useState<CartItem[]>([]);
-    const [shippingAddress, setShippingAddress] = useState<ShippingAddress>({
-        address: '',
-        city: '',
-        postalCode: '',
-        country: '',
-    });
-    const [paymentMethod, setPaymentMethod] = useState<PaymentMethods>();
-    const [loading, setLoading] = useState(false);
+    const [paymentMethod, setPaymentMethod] = useState<PaymentMethods>(
+        getInitialPaymentMethod(cookie),
+    );
+    
+    const [loading, setLoading] = useState<boolean>(false);
 
     const [prices, setPrices] = useState<Prices>({
         itemsPrice: 0,
@@ -86,32 +65,42 @@ export default function CartProvider({ children }: CartProviderProps) {
             (x: CartItem) => x.product === item.product,
         );
         if (existingItem) {
-            setCartItems((prevCartItems: any) =>
-                prevCartItems.map((cartItem: CartItem) =>
+            setCartItems((prevCartItems: any) => {
+                const result = prevCartItems.map((cartItem: CartItem) =>
                     cartItem.product === item.product ? item : cartItem,
-                ),
-            );
+                );
+
+                saveCartsItemsInCookies(result);
+                return result;
+            });
         } else {
-            setCartItems((prevCartItems: any) => [...prevCartItems, item]);
+            setCartItems((prevCartItems: any) => {
+                const result = [...prevCartItems, item];
+                saveCartsItemsInCookies(result);
+                return result;
+            });
         }
         setLoading(false);
     };
 
     const removeFromCart = async (id: number) => {
-        setCartItems((prevCartItems: any) =>
-            prevCartItems.filter(
+        setCartItems((prevCartItems: any) => {
+            const result = prevCartItems.filter(
                 (cartItem: CartItem) => cartItem.product != id,
-            ),
-        );
-        // save cart in cookies
+            );
+            saveCartsItemsInCookies(result);
+            return result;
+        });
     };
 
-    const saveShippingAddress = (data: any) => {
+    const saveShippingAddress = (data: ShippingAddress) => {
         setShippingAddress(data);
+        saveShippingAddressInCookies(data);
     };
 
     const savePaymentMethod = (data: any) => {
         setPaymentMethod(data);
+        savePaymentMethodInCookie(data);
     };
 
     return (
@@ -134,7 +123,7 @@ export default function CartProvider({ children }: CartProviderProps) {
     );
 }
 
-export const useCart = (): useCartFunc => {
+export const useCart = (): UseCart => {
     const context = useContext(CartContext);
 
     if (!context)
@@ -142,3 +131,24 @@ export const useCart = (): useCartFunc => {
 
     return context;
 };
+
+// Initial State Functions
+
+function getInitialCartItems(cookie: any) {
+    return cookie.cartItems ? JSON.parse(cookie.cartItems.value) : [];
+}
+
+function getInitialShippingAddress(cookie: any) {
+    return cookie.shippingAddress
+        ? JSON.parse(cookie.shippingAddress.value)
+        : {
+              address: '',
+              city: '',
+              postalCode: '',
+              country: '',
+          };
+}
+
+function getInitialPaymentMethod(cookie: any) {
+    return cookie.paymentMethod ? cookie.paymentMethod.value : '';
+}

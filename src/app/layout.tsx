@@ -27,12 +27,21 @@ type RootLayoutProps = {
 
 export default function RootLayout({ children }: RootLayoutProps) {
     const userCookie = cookies().get('user');
+    const cartCookie = cookies().get('cart');
+    const shippingAddressCookie = cookies().get('shipping_address');
+    const paymentMethodCookie = cookies().get('payment_method');
 
     return (
         <html lang="en">
             <body>
                 <UserContextProvider cookie={userCookie}>
-                    <CartProvider>
+                    <CartProvider
+                        cookie={{
+                            cartItems: cartCookie,
+                            paymentMethod: paymentMethodCookie,
+                            shippingAddress: shippingAddressCookie,
+                        }}
+                    >
                         <Header />
                         <main className="py-3">
                             <Container>{children}</Container>
