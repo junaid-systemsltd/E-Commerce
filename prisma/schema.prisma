@@ -19,9 +19,10 @@ model User {
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-  product    Product? @relation(fields: [product_id], references: [id])
-  product_id Int?
-  order      Order?
+
+  Review  Review?
+  Orders  Orders?
+  Product Product[]
 }
 
 model Review {
@@ -30,11 +31,14 @@ model Review {
   rating  Int
   comment String
 
+  user_id Int  @unique
+  user    User @relation(fields: [user_id], references: [id])
+
+  product_id Int
+  product    Product @relation(fields: [product_id], references: [id])
+
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-
-  product    Product? @relation(fields: [product_id], references: [id])
-  product_id Int?
 }
 
 model Product {
@@ -45,39 +49,19 @@ model Product {
   category       String
   description    String
   rating         Int    @default(0)
-  numReviews     Int    @default(0)
+  num_of_reviews Int    @default(0)
   price          Int    @default(0)
   count_in_stock Int    @default(0)
 
-  order_items OrderItems?
-  reviews     Review[]
-  user        User[]
-
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-}
-
-model Order {
-  id             Int     @id @default(autoincrement())
-  tax_price      Float   @default(0.0)
-  shipping_price Float   @default(0.0)
-  total_price    Float   @default(0.0)
-  is_paid        Boolean @default(false)
-  is_delivered   Boolean @default(false)
-
-  delivered_at DateTime
-  paid_at      DateTime
-
-  order_items OrderItems[]
-
-  shipping_address_id Int             @unique
-  shipping_address    ShippingAddress @relation(fields: [shipping_address_id], references: [id])
-
-  user_id Int  @unique
+  user_id Int
   user    User @relation(fields: [user_id], references: [id])
 
+  reviews Review[]
+
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
+
+  OrderItems OrderItems?
 }
 
 model OrderItems {
@@ -90,8 +74,8 @@ model OrderItems {
   product_id Int     @unique
   product    Product @relation(fields: [product_id], references: [id])
 
-  order    Order? @relation(fields: [order_id], references: [id])
-  order_id Int?
+  order_id Int
+  order    Orders? @relation(fields: [order_id], references: [id])
 }
 
 model ShippingAddress {
@@ -101,5 +85,29 @@ model ShippingAddress {
   postal_code String
   country     String
 
-  Order Order?
+  Orders Orders?
+}
+
+model Orders {
+  id             Int   @id @default(autoincrement())
+  tax_price      Float @default(0.0)
+  shipping_price Float @default(0.0)
+  total_price    Float @default(0.0)
+
+  is_paid      Boolean @default(false)
+  is_delivered Boolean @default(false)
+
+  delivered_at DateTime
+  paid_at      DateTime
+
+  user_id Int  @unique
+  user    User @relation(fields: [user_id], references: [id])
+
+  order_items OrderItems[]
+
+  shipping_address_id Int             @unique
+  shipping_address    ShippingAddress @relation(fields: [shipping_address_id], references: [id])
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 }
