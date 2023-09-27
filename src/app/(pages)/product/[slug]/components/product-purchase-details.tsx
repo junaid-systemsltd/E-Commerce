@@ -44,7 +44,13 @@ export default function ProductPurchaseDetails({
                         <Row>
                             <Col>Status:</Col>
                             <Col>
-                                <strong>
+                                <strong
+                                    className={`text-${
+                                        product.count_in_stock > 0
+                                            ? 'success'
+                                            : 'danger'
+                                    }`}
+                                >
                                     {product.count_in_stock > 0
                                         ? 'In Stock'
                                         : 'Out of Stock'}

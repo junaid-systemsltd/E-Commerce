@@ -10,6 +10,7 @@ import {
     Col,
 } from '@/components/elements';
 import ProductPurchaseDetails from './components/product-purchase-details';
+import ProductRating from './components/product-rating';
 
 export default async function ProductDetails(props: ProductDetailType) {
     const slug = props.params.slug || '';
@@ -58,33 +59,7 @@ export default async function ProductDetails(props: ProductDetailType) {
             </Row>
 
             {/* Product Review Section */}
-            <Row>
-                <Col md={6}>
-                    <h2>Reviews</h2>
-                    {product?.reviews?.length === 0 && (
-                        <Message> No Reviews </Message>
-                    )}
-                    <ListGroup variant="flush">
-                        {product?.reviews?.map((review: ReviewType) => {
-                            return (
-                                <ListGroupItem key={review.id}>
-                                    <strong>{review.name}</strong>
-                                    <Rating value={review.rating} />
-                                    <p>{review.created_at?.substring(0, 10)}</p>
-                                    <p>{review.comment}</p>
-                                </ListGroupItem>
-                            );
-                        })}
-                        <ListGroupItem>
-                            <h2>Write a Customer Review</h2>
-                            <Message>
-                                Please <Link href="/login"> Sign in</Link> to
-                                write a review
-                            </Message>
-                        </ListGroupItem>
-                    </ListGroup>
-                </Col>
-            </Row>
+            <ProductRating reviews={product.reviews} />
         </>
     );
 }
