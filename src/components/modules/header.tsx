@@ -8,9 +8,11 @@ import { Container, Navbar, Nav, NavDropdown } from 'react-bootstrap';
 // Module
 import { useAuth } from '@/contexts/UserContext';
 import { logoutAction } from '@/core/actions/userActions';
+import { useCart } from '@/contexts/CartContext';
 
 const Header = () => {
     const { user, setUser } = useAuth();
+    const { cartItems } = useCart();
 
     const logoutHandler = async () => {
         setUser(null);
@@ -29,7 +31,9 @@ const Header = () => {
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="ms-auto">
                             <Link className="nav-link" href="/cart">
-                                <i className="fas fa-shopping-cart" /> Cart
+                                <i className="fas fa-shopping-cart" /> Cart{' '}
+                                {cartItems.length > 0 &&
+                                    `(${cartItems.length})`}{' '}
                             </Link>
 
                             {user ? (
