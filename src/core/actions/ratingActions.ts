@@ -1,4 +1,5 @@
-import { Rating, ReviewType } from '@/types/product';
+'use server';
+import { Rating } from '@/types/product';
 import prisma from '../utils/prisma';
 import { User } from '@prisma/client';
 
@@ -9,31 +10,36 @@ export const addProductReview = async (
 ) => {
     const { comment, rating } = userRating;
 
+    // Counter to check whether user has already reviewed this product or not
     const alreadyReviewed = await prisma.review.count({
         where: { product_id: productId, user_id: user.id },
     });
 
-    if (alreadyReviewed) {
+    // Return if already Reviewed this product
+    if (alreadyReviewed > 0) {
         return {
             status: false,
             message: null,
-            error: 'Product already reviewed',
+            error: 'You already reviewed this Product',
         };
     }
 
-    const review = {
-        rating,
-        comment,
-        name: user.name,
-        user_id: user.id,
-        product_id: productId,
-    };
-
-    const reviews = await prisma.review.findMany({
-        where: { product_id: productId },
+    // Creating Review in Review DB
+    await prisma.review.create({
+        data: {
+            rating,
+            comment,
+            name: user.name,
+            user_id: user.id,
+            product_id: productId,
+        },
     });
 
-    await prisma.review.create({ data: review });
+    // Getting All Reviews to Calculate total reviews
+    const reviews = await prisma.review.findMany({
+        where: { product_id: productId },
+        select: { rating: true },
+    });
 
     const totalProductReviews = await prisma.review.count({
         where: { product_id: productId },
@@ -41,7 +47,7 @@ export const addProductReview = async (
 
     const productRating =
         reviews.reduce(
-            (acc: number, item: ReviewType) => item.rating + acc,
+            (acc: number, { rating }: { rating: number }) => rating + acc,
             0,
         ) / reviews.length;
 
@@ -49,13 +55,13 @@ export const addProductReview = async (
         where: { id: productId },
         data: {
             rating: productRating,
-            numReviews: totalProductReviews,
+            num_of_reviews: totalProductReviews,
         },
     });
 
     return {
         status: true,
-        message: 'Review added',
+        message: 'Review Success fully  added',
         error: null,
     };
 };

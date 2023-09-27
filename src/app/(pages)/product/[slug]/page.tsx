@@ -41,7 +41,7 @@ export default async function ProductDetails(props: ProductDetailType) {
                         <ListGroupItem>
                             <Rating
                                 value={product.rating}
-                                text={`${product.numReviews} reviews`}
+                                text={`${product.num_of_reviews} reviews`}
                             />
                         </ListGroupItem>
 
@@ -59,7 +59,7 @@ export default async function ProductDetails(props: ProductDetailType) {
             </Row>
 
             {/* Product Review Section */}
-            <ProductRating reviews={product.reviews} />
+            <ProductRating reviews={product.reviews} productId={product.id} />
         </>
     );
 }

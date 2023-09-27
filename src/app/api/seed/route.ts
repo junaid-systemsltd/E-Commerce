@@ -1,13 +1,15 @@
-import hasPassword from '@/core/utils/hashPassword';
-import { PrismaClient } from '@prisma/client';
+// Libs
 import { NextResponse } from 'next/server';
+import { PrismaClient } from '@prisma/client';
+// Modules
+import hasPassword from '@/core/utils/hashPassword';
 
 const prisma = new PrismaClient();
 
 export async function GET() {
     try {
-        await prisma.user.deleteMany();
-        await prisma.order.deleteMany();
+        await prisma.user.deleteMany({});
+        await prisma.orders.deleteMany({});
         await prisma.orderItems.deleteMany();
         await prisma.product.deleteMany();
         await prisma.shippingAddress.deleteMany();
@@ -29,6 +31,13 @@ export async function GET() {
             ],
         });
 
+        const user = await prisma.user.findUnique({
+            where: { email: 'user@abc.com' },
+        });
+
+        if (!user)
+            return NextResponse.json('Something went wrong', { status: 400 });
+
         await prisma.product.createMany({
             data: [
                 {
@@ -41,7 +50,8 @@ export async function GET() {
                     price: 89.99,
                     count_in_stock: 10,
                     rating: 4.5,
-                    numReviews: 12,
+                    num_of_reviews: 12,
+                    user_id: user.id,
                 },
                 {
                     name: 'iPhone 11 Pro 256GB Memory',
@@ -53,7 +63,8 @@ export async function GET() {
                     price: 599.99,
                     count_in_stock: 7,
                     rating: 4.0,
-                    numReviews: 8,
+                    num_of_reviews: 8,
+                    user_id: user.id,
                 },
                 {
                     name: 'Cannon EOS 80D DSLR Camera',
@@ -65,7 +76,8 @@ export async function GET() {
                     price: 929.99,
                     count_in_stock: 5,
                     rating: 3,
-                    numReviews: 12,
+                    num_of_reviews: 12,
+                    user_id: user.id,
                 },
                 {
                     name: 'Sony Playstation 4 Pro White Version',
@@ -77,7 +89,8 @@ export async function GET() {
                     price: 399.99,
                     count_in_stock: 11,
                     rating: 5,
-                    numReviews: 12,
+                    num_of_reviews: 12,
+                    user_id: user.id,
                 },
                 {
                     name: 'Logitech G-Series Gaming Mouse',
@@ -89,7 +102,8 @@ export async function GET() {
                     price: 49.99,
                     count_in_stock: 7,
                     rating: 3.5,
-                    numReviews: 10,
+                    num_of_reviews: 10,
+                    user_id: user.id,
                 },
                 {
                     name: 'Amazon Echo Dot 3rd Generation',
@@ -101,14 +115,15 @@ export async function GET() {
                     price: 29.99,
                     count_in_stock: 0,
                     rating: 4,
-                    numReviews: 12,
+                    num_of_reviews: 12,
+                    user_id: user.id,
                 },
             ],
         });
 
-        NextResponse.json('Successfully Seeded Data', { status: 201 });
+        return NextResponse.json('Successfully Seeded Data', { status: 200 });
     } catch (e) {
         console.log('Something went wrong', e);
-        NextResponse.json('Something went wrong', { status: 400 });
+        return NextResponse.json('Something went wrong', { status: 400 });
     }
 }

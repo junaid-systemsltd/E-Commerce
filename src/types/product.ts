@@ -7,7 +7,7 @@ export interface IProduct {
     category: string;
     description: string;
     rating: number;
-    numReviews: number;
+    num_of_reviews: number;
     price: number;
     count_in_stock: number;
     reviews?: Review;

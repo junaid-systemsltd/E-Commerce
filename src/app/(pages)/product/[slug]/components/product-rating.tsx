@@ -1,22 +1,32 @@
 'use client';
 // Libs
 import Link from 'next/link';
-import { useState } from 'react';
-import { Button, Col, Form, FormSelect, ListGroup, Row } from 'react-bootstrap';
+import toast from 'react-hot-toast';
+import { Col, Form, FormSelect, ListGroup, Row } from 'react-bootstrap';
 // Modules
 import { ReviewType } from '@/types/product';
-import { Message } from '@/components/elements';
-import Rating from '@/components/modules/rating';
 import { useAuth } from '@/contexts/UserContext';
+import Rating from '@/components/modules/rating';
+import extractFormData from '@/core/utils/extractFormData';
+import { Message, SubmitButton } from '@/components/elements';
+import { addProductReview } from '@/core/actions/ratingActions';
 
-export default function ProductRating({ reviews = [] }: any) {
+export default function ProductRating({ reviews = [], productId }: any) {
     const { user } = useAuth();
-    const [rating, setRating] = useState(0);
-    const [comment, setComment] = useState('');
 
-    const submitHandler = (e: any) => {
-        e.preventDefault();
-        console.log({ rating, comment });
+    const submitHandler = async (formData: FormData) => {
+        const userRating = extractFormData(formData);
+        const { status, error, message } = await addProductReview(
+            userRating,
+            user,
+            productId,
+        );
+
+        // Show error on status false
+        if (!status) return toast.error(error);
+
+        // Show Success message
+        toast.success(message);
     };
 
     return (
@@ -30,7 +40,11 @@ export default function ProductRating({ reviews = [] }: any) {
                             <ListGroup.Item key={review.id}>
                                 <strong>{review.name}</strong>
                                 <Rating value={review.rating} />
-                                <p>{review.created_at?.substring(0, 10)}</p>
+                                <p>
+                                    {review.created_at
+                                        .toString()
+                                        .substring(0, 10)}
+                                </p>
                                 <p>{review.comment}</p>
                             </ListGroup.Item>
                         );
@@ -38,16 +52,10 @@ export default function ProductRating({ reviews = [] }: any) {
                     <ListGroup.Item>
                         <h2>Write a Customer Review</h2>
                         {user ? (
-                            <Form onSubmit={submitHandler}>
+                            <Form action={submitHandler}>
                                 <Form.Group controlId="rating">
                                     <Form.Label>Rating</Form.Label>
-                                    <Form.Control
-                                        as={FormSelect}
-                                        value={rating}
-                                        onChange={e =>
-                                            setRating(Number(e.target.value))
-                                        }
-                                    >
+                                    <Form.Control as={FormSelect} name="rating">
                                         <option value="">Select...</option>
                                         <option value="1">1 - Poor</option>
                                         <option value="2">2 - Fair</option>
@@ -61,19 +69,13 @@ export default function ProductRating({ reviews = [] }: any) {
                                     <Form.Control
                                         as="textarea"
                                         rows={3}
-                                        value={comment}
-                                        onChange={e =>
-                                            setComment(e.target.value)
-                                        }
+                                        name="comment"
                                     ></Form.Control>
                                 </Form.Group>
-                                <Button
-                                    className="mt-3"
-                                    type="submit"
-                                    variant="primary"
-                                >
-                                    Submit
-                                </Button>
+                                <SubmitButton
+                                    btnText="Submit"
+                                    loadingText="Submitting"
+                                ></SubmitButton>
                             </Form>
                         ) : (
                             <Message>
