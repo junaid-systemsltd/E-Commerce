@@ -21,14 +21,14 @@ model User {
   updated_at DateTime @updatedAt
 
   Review  Review?
-  Orders  Orders?
   Product Product[]
+  Order   Order[]
 }
 
 model Review {
   id      Int    @id @default(autoincrement())
   name    String
-  rating  Int
+  rating  Float
   comment String
 
   user_id Int  @unique
@@ -48,34 +48,61 @@ model Product {
   brand          String
   category       String
   description    String
-  rating         Int    @default(0)
+  rating         Float  @default(0)
   num_of_reviews Int    @default(0)
-  price          Int    @default(0)
+  price          Float  @default(0)
   count_in_stock Int    @default(0)
+
+  reviews Review[]
 
   user_id Int
   user    User @relation(fields: [user_id], references: [id])
 
-  reviews Review[]
+  orderItem_id Int?
+  OrderItem    OrderItem? @relation(fields: [orderItem_id], references: [id])
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-
-  OrderItems OrderItems?
 }
 
-model OrderItems {
+model Order {
+  id             Int   @id @default(autoincrement())
+  tax_price      Float @default(0.0)
+  shipping_price Float @default(0.0)
+  total_price    Float @default(0.0)
+
+  is_paid      Boolean @default(false)
+  is_delivered Boolean @default(false)
+
+  delivered_at DateTime?
+  paid_at      DateTime?
+
+  PaymentResults PaymentResults?
+  order_items    OrderItem[]
+
+  user_id Int
+  user    User @relation(fields: [user_id], references: [id])
+
+  shipping_address_id Int             @unique
+  shipping_address    ShippingAddress @relation(fields: [shipping_address_id], references: [id])
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model OrderItem {
   id    Int    @id @default(autoincrement())
   name  String
   qty   Int
   image String
-  price Int
+  price Float
 
-  product_id Int     @unique
-  product    Product @relation(fields: [product_id], references: [id])
+  orderId Int?
+  Order   Order? @relation(fields: [orderId], references: [id])
 
-  order_id Int
-  order    Orders? @relation(fields: [order_id], references: [id])
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  Product   Product[]
 }
 
 model ShippingAddress {
@@ -85,29 +112,21 @@ model ShippingAddress {
   postal_code String
   country     String
 
-  Orders Orders?
+  order Order?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
-model Orders {
-  id             Int   @id @default(autoincrement())
-  tax_price      Float @default(0.0)
-  shipping_price Float @default(0.0)
-  total_price    Float @default(0.0)
+model PaymentResults {
+  id            Int    @id @default(autoincrement())
+  status        String
+  update_time   String
+  email_address String
 
-  is_paid      Boolean @default(false)
-  is_delivered Boolean @default(false)
+  order_id Int   @unique
+  order    Order @relation(fields: [order_id], references: [id])
 
-  delivered_at DateTime
-  paid_at      DateTime
-
-  user_id Int  @unique
-  user    User @relation(fields: [user_id], references: [id])
-
-  order_items OrderItems[]
-
-  shipping_address_id Int             @unique
-  shipping_address    ShippingAddress @relation(fields: [shipping_address_id], references: [id])
-
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

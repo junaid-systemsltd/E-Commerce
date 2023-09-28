@@ -27,7 +27,7 @@ export const addProductReview = async (
     // Creating Review in Review DB
     await prisma.review.create({
         data: {
-            rating,
+            rating: Number(rating),
             comment,
             name: user.name,
             user_id: user.id,

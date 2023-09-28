@@ -1,7 +1,9 @@
 'use client';
 // Libs
 import Link from 'next/link';
+import { useRef } from 'react';
 import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 import { Col, Form, FormSelect, ListGroup, Row } from 'react-bootstrap';
 // Modules
 import { ReviewType } from '@/types/product';
@@ -13,6 +15,8 @@ import { addProductReview } from '@/core/actions/ratingActions';
 
 export default function ProductRating({ reviews = [], productId }: any) {
     const { user } = useAuth();
+    const router = useRouter();
+    const formRef = useRef<HTMLFormElement>(null);
 
     const submitHandler = async (formData: FormData) => {
         const userRating = extractFormData(formData);
@@ -27,6 +31,8 @@ export default function ProductRating({ reviews = [], productId }: any) {
 
         // Show Success message
         toast.success(message);
+        formRef.current?.reset();
+        router.refresh();
     };
 
     return (
@@ -52,7 +58,7 @@ export default function ProductRating({ reviews = [], productId }: any) {
                     <ListGroup.Item>
                         <h2>Write a Customer Review</h2>
                         {user ? (
-                            <Form action={submitHandler}>
+                            <Form action={submitHandler} ref={formRef}>
                                 <Form.Group controlId="rating">
                                     <Form.Label>Rating</Form.Label>
                                     <Form.Control as={FormSelect} name="rating">

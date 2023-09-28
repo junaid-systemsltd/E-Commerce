@@ -8,9 +8,9 @@ const prisma = new PrismaClient();
 
 export async function GET() {
     try {
-        await prisma.user.deleteMany({});
-        await prisma.orders.deleteMany({});
-        await prisma.orderItems.deleteMany();
+        await prisma.user.deleteMany();
+        await prisma.order.deleteMany();
+        await prisma.orderItem.deleteMany();
         await prisma.product.deleteMany();
         await prisma.shippingAddress.deleteMany();
         await prisma.review.deleteMany();

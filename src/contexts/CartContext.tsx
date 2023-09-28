@@ -39,7 +39,7 @@ export default function CartProvider({ children, cookie }: CartProviderProps) {
     const [paymentMethod, setPaymentMethod] = useState<PaymentMethods>(
         getInitialPaymentMethod(cookie),
     );
-    
+
     const [loading, setLoading] = useState<boolean>(false);
 
     const [prices, setPrices] = useState<Prices>({

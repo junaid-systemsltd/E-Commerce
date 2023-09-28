@@ -1,16 +1,12 @@
+// Libs
 import Link from 'next/link';
+// Modules
 import Rating from '@/components/modules/rating';
-import { fetchProduct } from '@/core/services/products';
-import { IProduct, ProductDetailType, ReviewType } from '@/types/product';
-import {
-    ListGroup,
-    ListGroupItem,
-    Row,
-    Message,
-    Col,
-} from '@/components/elements';
-import ProductPurchaseDetails from './components/product-purchase-details';
 import ProductRating from './components/product-rating';
+import { fetchProduct } from '@/core/services/products';
+import { IProduct, ProductDetailType } from '@/types/product';
+import { ListGroup, ListGroupItem, Row, Col } from '@/components/elements';
+import ProductPurchaseDetails from './components/product-purchase-details';
 
 export default async function ProductDetails(props: ProductDetailType) {
     const slug = props.params.slug || '';

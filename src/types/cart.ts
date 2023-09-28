@@ -20,10 +20,10 @@ export enum PaymentMethods {
 }
 
 export type Prices = {
-    itemsPrice: number | string;
-    shippingPrice: number | string;
-    taxPrice: number | string;
-    totalPrice: number | string;
+    itemsPrice: number;
+    shippingPrice: number;
+    taxPrice: number;
+    totalPrice: number;
 };
 
 export type UseCart = {

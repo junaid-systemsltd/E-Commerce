@@ -4,8 +4,8 @@ export type Order = {
     orderItems: CartItem[];
     shippingAddress: ShippingAddress;
     paymentMethod: PaymentMethods;
-    itemsPrice: string;
-    shippingPrice: string;
-    taxPrice: string;
-    totalPrice: string;
+    itemsPrice: number;
+    shippingPrice: number;
+    taxPrice: number;
+    totalPrice: number;
 };

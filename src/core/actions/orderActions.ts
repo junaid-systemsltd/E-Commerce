@@ -1,4 +1,6 @@
+'use server';
 import { Order } from '@/types/order';
+import { CartItem } from '@types/cart';
 import prisma from '../utils/prisma';
 
 export const addOrderItemsActions = async (order: Order, userId: number) => {
@@ -19,25 +21,41 @@ export const addOrderItemsActions = async (order: Order, userId: number) => {
         };
     }
 
-    const shippingRecord = await prisma.shippingAddress.create({
+    // Creating Shipping Address Record
+    const { address, city, country, postalCode } = shippingAddress;
+    const shippingAddressRecord = await prisma.shippingAddress.create({
         data: {
-            address: shippingAddress.address,
-            city: shippingAddress.city,
-            postal_code: shippingAddress.postalCode,
-            country: shippingAddress.country,
+            address,
+            city,
+            country,
+            postal_code: postalCode,
         },
     });
 
-    const orderRecord = await prisma.orderItems.create({ data: {} });
+    // Creating Multiple Order Items
+    const orderItemsData = orderItems.map(
+        ({ image, name, price, qty }: CartItem) => ({
+            image,
+            name,
+            price,
+            qty,
+        }),
+    );
 
     const createdOrder = prisma.order.create({
         data: {
-            oreder_id: orderItems,
-            shipping_address_id: shippingRecord.id,
-            shipping_price: Number(shippingPrice),
-            tax_price: Number(taxPrice),
-            total_price: Number(totalPrice),
+            tax_price: taxPrice,
+            shipping_price: shippingPrice,
+            total_price: totalPrice,
+            order_items: { createMany: { data: orderItemsData } },
             user_id: userId,
+            shipping_address_id: shippingAddressRecord.id,
+            delivered_at: new Date(),
+            paid_at: new Date(),
         },
     });
+
+    console.log({ createdOrder });
+
+    return createdOrder;
 };

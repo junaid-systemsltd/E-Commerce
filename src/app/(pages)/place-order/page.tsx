@@ -5,6 +5,9 @@ import { useCart } from '@/contexts/CartContext';
 import { Message } from '@/components/elements';
 import Link from 'next/link';
 import { useCallback, useEffect } from 'react';
+import { addOrderItemsActions } from '@/core/actions/orderActions';
+import { useAuth } from '@/contexts/UserContext';
+import { Order } from '@/types/order';
 
 export default function PlaceOrder() {
     const { shippingAddress, paymentMethod, cartItems, prices, setPrices } =
@@ -12,8 +15,10 @@ export default function PlaceOrder() {
     const { address, city, country, postalCode } = shippingAddress;
     const { itemsPrice, shippingPrice, taxPrice, totalPrice } = prices;
 
-    const addDecimals = useCallback((num: number) => {
-        return (Math.round(num * 100) / 100).toFixed(2);
+    const { user } = useAuth();
+
+    const addDecimals = useCallback((num: number): number => {
+        return Number((Math.round(num * 100) / 100).toFixed(2));
     }, []);
 
     useEffect(() => {
@@ -26,11 +31,13 @@ export default function PlaceOrder() {
             Number((0.15 * Number(itemsPrice)).toFixed(2)),
         );
 
-        const totalPrice = (
-            Number(itemsPrice) +
-            Number(shippingPrice) +
-            Number(taxPrice)
-        ).toFixed(2);
+        const totalPrice = Number(
+            (
+                Number(itemsPrice) +
+                Number(shippingPrice) +
+                Number(taxPrice)
+            ).toFixed(2),
+        );
 
         setPrices({
             itemsPrice,
@@ -39,6 +46,21 @@ export default function PlaceOrder() {
             totalPrice,
         });
     }, []);
+
+    const placeOrderHandler = async () => {
+        const order: Order = {
+            itemsPrice,
+            orderItems: cartItems,
+            paymentMethod,
+            shippingAddress,
+            shippingPrice,
+            taxPrice,
+            totalPrice,
+        };
+        const response = await addOrderItemsActions(order, user.id);
+
+        console.log({ response });
+    };
 
     return (
         <>
@@ -139,7 +161,7 @@ export default function PlaceOrder() {
                                     type="button"
                                     className="w-100"
                                     disabled={cartItems.length === 0}
-                                    // onClick={placeOrderHandler}
+                                    onClick={placeOrderHandler}
                                 >
                                     Place Order
                                 </Button>
