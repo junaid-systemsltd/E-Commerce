@@ -1,6 +1,7 @@
 'use client';
 
 import {
+    clearCartDataFromCookie,
     saveCartsItemsInCookies,
     savePaymentMethodInCookie,
     saveShippingAddressInCookies,
@@ -51,7 +52,7 @@ export default function CartProvider({ children, cookie }: CartProviderProps) {
 
     // Action Methods
     const addToCart = async (id: number, qty: number) => {
-        setLoading(true);
+        // setLoading(true);
         const product: IProduct = await fetchProduct(id);
         const item = {
             product: product.id,
@@ -103,6 +104,26 @@ export default function CartProvider({ children, cookie }: CartProviderProps) {
         savePaymentMethodInCookie(data);
     };
 
+    const clearCartData = () => {
+        setPrices({
+            itemsPrice: 0,
+            shippingPrice: 0,
+            taxPrice: 0,
+            totalPrice: 0,
+        });
+
+        setPaymentMethod(PaymentMethods.Paypal);
+        setLoading(false);
+        setCartItems([]);
+        setShippingAddress({
+            address: '',
+            city: '',
+            country: '',
+            postalCode: '',
+        });
+        clearCartDataFromCookie();
+    };
+
     return (
         <CartContext.Provider
             value={{
@@ -113,6 +134,7 @@ export default function CartProvider({ children, cookie }: CartProviderProps) {
                 shippingAddress,
                 addToCart,
                 setPrices,
+                clearCartData,
                 removeFromCart,
                 savePaymentMethod,
                 saveShippingAddress,
@@ -135,18 +157,24 @@ export const useCart = (): UseCart => {
 // Initial State Functions
 
 function getInitialCartItems(cookie: any) {
-    return cookie.cartItems ? JSON.parse(cookie.cartItems.value) : [];
+    try {
+        return JSON.parse(cookie.cartItems.value);
+    } catch (e) {
+        return [];
+    }
 }
 
 function getInitialShippingAddress(cookie: any) {
-    return cookie.shippingAddress
-        ? JSON.parse(cookie.shippingAddress.value)
-        : {
-              address: '',
-              city: '',
-              postalCode: '',
-              country: '',
-          };
+    try {
+        return JSON.parse(cookie.shippingAddress.value);
+    } catch (e) {
+        return {
+            address: '',
+            city: '',
+            postalCode: '',
+            country: '',
+        };
+    }
 }
 
 function getInitialPaymentMethod(cookie: any) {
