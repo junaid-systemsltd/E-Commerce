@@ -17,8 +17,8 @@ export default function ProductLists({ products }: any) {
                     </tr>
                 </thead>
                 <tbody>
-                    {products.map((product: any) => (
-                        <ProductListItem {...product} />
+                    {products.map((product: any,index: number) => (
+                        <ProductListItem key={index} {...product} />
                     ))}
                 </tbody>
             </Table>
