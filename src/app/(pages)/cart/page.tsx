@@ -35,7 +35,7 @@ export default function Cart() {
                 setQueryParams({ product_id: null, qty: null });
             }
         })();
-    }, []);
+    }, [addToCart, queryParams]);
 
     const checkoutHandler = () => {
         user ? router.push('/shipping') : router.push('/login');

@@ -51,7 +51,7 @@ export default function CartProvider({ children, cookie }: CartProviderProps) {
     });
 
     // Action Methods
-    const addToCart = async (id: number, qty: number) => {
+    const addToCart = async (id: string, qty: number) => {
         // setLoading(true);
         const product: IProduct = await fetchProduct(id);
         const item = {
