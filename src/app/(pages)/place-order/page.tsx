@@ -85,6 +85,7 @@ export default function PlaceOrder() {
                 setLoading(false);
                 toast.success('Order successfully created.');
                 await clearData();
+                // @ts-ignore
                 router.push(`/order/${newOrder?.id}`);
             }
         } catch (e) {
