@@ -1,5 +1,6 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
+import includesPath from './core/utils/includesPath';
 
 export default function middleware(req: NextRequest) {
     const { pathname } = new URL(req.url);
@@ -9,7 +10,7 @@ export default function middleware(req: NextRequest) {
         const user = JSON.parse(userCookie?.value);
 
         // Handling Login & Register Routes for logged in User
-        if (pathname.startsWith('/login') || pathname.startsWith('/register')) {
+        if (includesPath(['/login', '/register'], pathname)) {
             return NextResponse.redirect(new URL('/', req.url));
         }
 
@@ -24,8 +25,16 @@ export default function middleware(req: NextRequest) {
         }
 
         // Handling Authenticated Routes
-        if (['/profile'].includes(pathname)) {
-            return NextResponse.redirect(new URL('/login', req.url));
+        if (
+            includesPath(
+                ['/profile', '/shipping', '/payment', '/place-order'],
+                pathname,
+            )
+        ) {
+            const param = pathname.replace('/', '');
+            return NextResponse.redirect(
+                new URL(`/login?redirect=${param}`, req.url),
+            );
         }
     }
 

@@ -1,24 +1,44 @@
 'use client';
+// Libs
+import Link from 'next/link';
+import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
+import { useCallback, useEffect, useState } from 'react';
 import { Button, Card, Col, Image, ListGroup, Row } from 'react-bootstrap';
-import CheckoutSteps from '../shipping/components/CheckoutSteps';
+
+// Modules
+import { Order } from '@/types/order';
 import { useCart } from '@/contexts/CartContext';
 import { Message } from '@/components/elements';
-import Link from 'next/link';
-import { useCallback, useEffect } from 'react';
-import { addOrderItemsActions } from '@/core/actions/orderActions';
 import { useAuth } from '@/contexts/UserContext';
-import { Order } from '@/types/order';
+import CheckoutSteps from '../shipping/components/CheckoutSteps';
+import { addOrderItemsActions } from '@/core/actions/orderActions';
 
 export default function PlaceOrder() {
-    const { shippingAddress, paymentMethod, cartItems, prices, setPrices } =
-        useCart();
+    const { user } = useAuth();
+    const router = useRouter();
+
+    const [isLoading, setLoading] = useState(false);
+
+    const {
+        shippingAddress,
+        paymentMethod,
+        cartItems,
+        prices,
+        setPrices,
+        clearData,
+    } = useCart();
+
+    // Destructuring
     const { address, city, country, postalCode } = shippingAddress;
     const { itemsPrice, shippingPrice, taxPrice, totalPrice } = prices;
 
-    const { user } = useAuth();
-
     const addDecimals = useCallback((num: number): number => {
         return Number((Math.round(num * 100) / 100).toFixed(2));
+    }, []);
+
+    useEffect(() => {
+        if (cartItems.length === 0) router.replace('/cart');
     }, []);
 
     useEffect(() => {
@@ -48,18 +68,30 @@ export default function PlaceOrder() {
     }, []);
 
     const placeOrderHandler = async () => {
-        const order: Order = {
-            itemsPrice,
-            orderItems: cartItems,
-            paymentMethod,
-            shippingAddress,
-            shippingPrice,
-            taxPrice,
-            totalPrice,
-        };
-        const response = await addOrderItemsActions(order, user.id);
+        setLoading(true);
+        try {
+            const order: Order = {
+                itemsPrice,
+                orderItems: cartItems,
+                paymentMethod,
+                shippingAddress,
+                shippingPrice,
+                taxPrice,
+                totalPrice,
+            };
+            const newOrder = await addOrderItemsActions(order, user.id);
 
-        console.log({ response });
+            if (newOrder) {
+                setLoading(false);
+                toast.success('Order successfully created.');
+                await clearData();
+                router.push(`/order/${newOrder?.id}`);
+            }
+        } catch (e) {
+            toast.error('Something went wrong');
+            console.error(e);
+            setLoading(false);
+        }
     };
 
     return (
@@ -108,7 +140,10 @@ export default function PlaceOrder() {
                                                 </Col>
                                                 <Col md={4}>
                                                     {item.qty} x ${item.price} =
-                                                    ${item.qty * item.price}
+                                                    $
+                                                    {(
+                                                        item.qty * item.price
+                                                    ).toFixed(2)}
                                                 </Col>
                                             </Row>
                                         </ListGroup.Item>
@@ -148,22 +183,17 @@ export default function PlaceOrder() {
                                     <Col> ${totalPrice} </Col>
                                 </Row>
                             </ListGroup.Item>
-                            {/* <ListGroup.Item>
-                                {error && (
-                                    <Message variant="danger">
-                                        {' '}
-                                        {error}{' '}
-                                    </Message>
-                                )}
-                            </ListGroup.Item> */}
+
                             <ListGroup.Item>
                                 <Button
                                     type="button"
                                     className="w-100"
-                                    disabled={cartItems.length === 0}
+                                    disabled={
+                                        cartItems.length === 0 || isLoading
+                                    }
                                     onClick={placeOrderHandler}
                                 >
-                                    Place Order
+                                    {isLoading ? 'Processing' : 'Place Order'}
                                 </Button>
                             </ListGroup.Item>
                         </ListGroup>

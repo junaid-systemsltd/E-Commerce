@@ -7,7 +7,6 @@ import {
     Card,
     Col,
     Form,
-    FormSelect,
     Image,
     ListGroup,
     Row,
@@ -16,15 +15,13 @@ import { useRouter } from 'next/navigation';
 // Modules
 import { Message } from '@/components/elements';
 import { useCart } from '@/contexts/CartContext';
-import { useAuth } from '@/contexts/UserContext';
 import Spinner from '@/components/elements/spinner';
 import useQueryParams from '@/core/hooks/useQueryParams';
 
 export default function Cart() {
-    const { cartItems, addToCart, removeFromCart, loading } = useCart();
-    const { setQueryParams, queryParams } = useQueryParams();
     const router = useRouter();
-    const { user } = useAuth();
+    const { queryParams } = useQueryParams();
+    const { cartItems, addToCart, removeFromCart, loading } = useCart();
 
     useEffect(() => {
         (async () => {
@@ -32,14 +29,11 @@ export default function Cart() {
                 const qty = queryParams.get('qty') || 0;
                 const product_id = queryParams.get('product_id') || '';
                 await addToCart(product_id, Number(qty));
-                setQueryParams({ product_id: null, qty: null });
             }
         })();
-    }, [addToCart, queryParams]);
+    }, []);
 
-    const checkoutHandler = () => {
-        user ? router.push('/shipping') : router.push('/login');
-    };
+    const checkoutHandler = () => router.push('/shipping');
 
     return (
         <>
@@ -80,9 +74,9 @@ export default function Cart() {
                                             </Col>
                                             <Col md={2}>${item.price}</Col>
                                             <Col md={2}>
-                                                <FormSelect
+                                                <Form.Control
+                                                    value={item.qty}
                                                     as="select"
-                                                    value={Number(item.qty)}
                                                     onChange={e => {
                                                         addToCart(
                                                             item.product.toString(),
@@ -98,13 +92,17 @@ export default function Cart() {
                                                         ).keys(),
                                                     ].map(x => (
                                                         <option
+                                                            // selected={
+                                                            //     x + 1 ===
+                                                            //     item.qty
+                                                            // }
                                                             key={x + 1}
                                                             value={x + 1}
                                                         >
                                                             {x + 1}
                                                         </option>
                                                     ))}
-                                                </FormSelect>
+                                                </Form.Control>
                                             </Col>
                                             <Col md={2}>
                                                 <Button
@@ -150,7 +148,7 @@ export default function Cart() {
                                 <ListGroup.Item>
                                     <Button
                                         type="button"
-                                        className="btn-block"
+                                        className="w-100"
                                         disabled={cartItems.length === 0}
                                         onClick={checkoutHandler}
                                     >

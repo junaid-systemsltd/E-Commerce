@@ -22,10 +22,11 @@
       "@/*": ["./src/*"],
       "@app/*": ["./src/app/*"],
       "@components/*": ["./src/components/*"],
-      "@ui/*": ["./src/components/elements/*"],
-      "@views/*": ["./src/views/*"],
+      "@constants/*": ["./src/constants/*"],
+      "@contexts/*": ["./src/contexts/*"],
+      "@core/*": ["./src/core/*"],
       "@types/*": ["./src/types/*"],
-      "@pages/*": ["./src/app/(pages)/*"]
+      "@pages/*": ["./src/app/(pages)/*"],
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

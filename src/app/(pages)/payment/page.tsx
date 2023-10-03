@@ -2,7 +2,7 @@
 import { FormContainer } from '@/components/elements';
 import CheckoutSteps from '../shipping/components/CheckoutSteps';
 import { Button, Col, Form } from 'react-bootstrap';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useCart } from '@/contexts/CartContext';
 import { useRouter } from 'next/navigation';
 import { PaymentMethods } from '@/types/cart';
@@ -10,9 +10,13 @@ import { PaymentMethods } from '@/types/cart';
 export default function Payment() {
     const { savePaymentMethod, shippingAddress } = useCart();
     const router = useRouter();
-    const [paymentMethod, setPaymentMethod] = useState(PaymentMethods.Paypal);
+    const [paymentMethod, setPaymentMethod] = useState<PaymentMethods>(
+        PaymentMethods.Paypal,
+    );
 
-    if (!shippingAddress.address) router.push('/shipping');
+    useEffect(() => {
+        if (!shippingAddress.address) router.push('/shipping');
+    }, []);
 
     const submitHandler = (e: any) => {
         e.preventDefault();
@@ -35,8 +39,10 @@ export default function Payment() {
                                 id="Paypal"
                                 name="paymentMethod"
                                 value={PaymentMethods.Paypal}
-                                checked
-                                onChange={e =>
+                                checked={
+                                    paymentMethod === PaymentMethods.Paypal
+                                }
+                                onChange={() =>
                                     setPaymentMethod(PaymentMethods.Paypal)
                                 }
                             ></Form.Check>
@@ -46,7 +52,10 @@ export default function Payment() {
                                 id="Stripe"
                                 name="paymentMethod"
                                 value={PaymentMethods.Stripe}
-                                onChange={e =>
+                                checked={
+                                    paymentMethod === PaymentMethods.Stripe
+                                }
+                                onChange={() =>
                                     setPaymentMethod(PaymentMethods.Stripe)
                                 }
                             ></Form.Check>

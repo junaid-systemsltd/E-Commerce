@@ -35,6 +35,7 @@ export type UseCart = {
     setPrices: (prices: Prices) => void;
     saveShippingAddress: (data: any) => void;
     removeFromCart: (id: string) => Promise<void>;
+    clearData: () => Promise<void>;
     addToCart: (id: string, qty: number) => Promise<void>;
     savePaymentMethod: (paymentMethod: PaymentMethods) => void;
 };

@@ -5,16 +5,28 @@ import Link from 'next/link';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
-import { Button, Col, Form, Row } from 'react-bootstrap';
+import { Col, Form, Row } from 'react-bootstrap';
 
 // Modules
 import { useAuth } from '@/contexts/UserContext';
 import { FormContainer, Message, SubmitButton } from '@/components/elements';
 import { loginAction } from '@/core/actions/userActions';
 
-export default function Login() {
+// Types
+type LoginProps = {
+    params: {};
+    searchParams: {
+        redirect?: string;
+    };
+};
+
+export default function Login(props: LoginProps) {
     const { setUser } = useAuth();
     const router = useRouter();
+    const {
+        searchParams: { redirect },
+    } = props;
+
     const [errors, setErrors] = useState<any>(null);
 
     const submitHandler = async (formData: FormData) => {
@@ -27,7 +39,8 @@ export default function Login() {
 
             setUser(user);
             toast.success(message);
-            router.push('/');
+            const route = redirect ?? '/';
+            router.push(route);
         } catch (e) {
             console.log(e);
         }

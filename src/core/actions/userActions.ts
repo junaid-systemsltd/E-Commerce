@@ -1,7 +1,6 @@
 'use server';
 
 // Libs
-import Joi from 'joi';
 import { cookies } from 'next/headers';
 
 // Modules
@@ -61,7 +60,6 @@ export async function profileUpdateAction(formData: FormData) {
             where: { id: Number(id) },
             data: { ...updateFields },
         });
-
 
         if (user) {
             cookies().set('user', JSON.stringify(user));

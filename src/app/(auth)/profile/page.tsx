@@ -2,18 +2,17 @@
 
 // Libs
 import { useState } from 'react';
-import { Col, Form, Row, Table } from 'react-bootstrap';
+import { Col, Form, Row } from 'react-bootstrap';
 // Modules
-import { useAuth } from '@/contexts/UserContext';
-import Spinner from '@/components/elements/spinner';
-import { Message, SubmitButton } from '@/components/elements';
-import { profileUpdateAction } from '@/core/actions/userActions';
+import MyOrders from './components/my-orders';
+import { useAuth } from '@contexts/UserContext';
+import { Message, SubmitButton } from '@components/elements';
+import { profileUpdateAction } from '@core/actions/userActions';
 
 export default function Profile() {
     const { user, setUser } = useAuth();
     const [name, setName] = useState(user?.name || '');
     const [email, setEmail] = useState(user?.email || '');
-    const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState<any>(null);
     const [successStatus, setSuccessStatus] = useState(false);
 
@@ -92,32 +91,7 @@ export default function Profile() {
                     </Form>
                 </Col>
                 <Col md={9}>
-                    <h2>My Orders</h2>
-                    {loading ? (
-                        <Spinner />
-                    ) : (
-                        <>
-                            <Table
-                                striped
-                                bordered
-                                hover
-                                responsive
-                                className="table-sm"
-                            >
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>DATE</th>
-                                        <th>TOTAL</th>
-                                        <th>PAID</th>
-                                        <th>DELIVERED</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </Table>
-                        </>
-                    )}
+                    <MyOrders />
                 </Col>
             </Row>
         </>

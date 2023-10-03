@@ -52,14 +52,14 @@ export default function CartProvider({ children, cookie }: CartProviderProps) {
 
     // Action Methods
     const addToCart = async (id: string, qty: number) => {
-        // setLoading(true);
+        setLoading(true);
         const product: IProduct = await fetchProduct(id);
         const item = {
             product: product.id,
             name: product.name,
             image: product.image,
             price: product.price,
-            countInStock: product.count_in_stock,
+            count_in_stock: product.count_in_stock,
             qty,
         };
         const existingItem = cartItems.find(
@@ -104,7 +104,7 @@ export default function CartProvider({ children, cookie }: CartProviderProps) {
         savePaymentMethodInCookie(data);
     };
 
-    const clearCartData = () => {
+    const clearData = async () => {
         setPrices({
             itemsPrice: 0,
             shippingPrice: 0,
@@ -112,16 +112,17 @@ export default function CartProvider({ children, cookie }: CartProviderProps) {
             totalPrice: 0,
         });
 
+        await clearCartDataFromCookie();
+
         setPaymentMethod(PaymentMethods.Paypal);
         setLoading(false);
         setCartItems([]);
         setShippingAddress({
             address: '',
             city: '',
-            country: '',
             postalCode: '',
+            country: '',
         });
-        clearCartDataFromCookie();
     };
 
     return (
@@ -134,7 +135,7 @@ export default function CartProvider({ children, cookie }: CartProviderProps) {
                 shippingAddress,
                 addToCart,
                 setPrices,
-                clearCartData,
+                clearData,
                 removeFromCart,
                 savePaymentMethod,
                 saveShippingAddress,
@@ -178,5 +179,7 @@ function getInitialShippingAddress(cookie: any) {
 }
 
 function getInitialPaymentMethod(cookie: any) {
-    return cookie.paymentMethod ? cookie.paymentMethod.value : '';
+    return cookie.paymentMethod
+        ? cookie.paymentMethod.value
+        : PaymentMethods.Paypal;
 }
