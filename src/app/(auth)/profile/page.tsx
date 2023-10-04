@@ -26,6 +26,8 @@ export default function Profile() {
         setUser(user);
     };
 
+    if (!user) return null;
+
     return (
         <>
             <Row>
