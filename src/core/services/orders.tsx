@@ -13,3 +13,12 @@ export const fetchOrdersById = async (id: string): Promise<any> => {
 
     return order;
 };
+
+export const fetchAllOrders = async (): Promise<any> =>
+    await prisma.order.findMany({
+        include: {
+            user: true,
+            shipping_address: true,
+            order_items: true,
+        },
+    });
