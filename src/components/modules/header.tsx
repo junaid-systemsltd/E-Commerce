@@ -3,6 +3,7 @@
 // Lib
 import Link from 'next/link';
 import toast from 'react-hot-toast';
+import { usePathname, useRouter } from 'next/navigation';
 import { Container, Navbar, Nav, NavDropdown } from 'react-bootstrap';
 
 // Module
@@ -11,18 +12,27 @@ import { logoutAction } from '@/core/actions/userActions';
 import { useCart } from '@/contexts/CartContext';
 
 const Header = () => {
-    const { user, setUser } = useAuth();
+    const { push } = useRouter();
+    const pathname = usePathname();
     const { cartItems } = useCart();
+    const { user, setUser } = useAuth();
 
     const logoutHandler = async () => {
         setUser(null);
         await logoutAction();
         toast.success('You have been logged out!');
+        push('/');
     };
 
     return (
         <header>
-            <Navbar bg="dark" variant="dark" expand="lg" collapseOnSelect>
+            <Navbar
+                bg="dark"
+                variant="dark"
+                expand="lg"
+                collapseOnSelect
+                sticky="top"
+            >
                 <Container>
                     <Link href="/">
                         <Navbar.Brand>Shop</Navbar.Brand>
@@ -30,7 +40,12 @@ const Header = () => {
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="ms-auto">
-                            <Link className="nav-link" href="/cart">
+                            <Link
+                                className={`nav-link ${
+                                    pathname === '/cart' ? 'active' : ''
+                                }`}
+                                href="/cart"
+                            >
                                 <i className="fas fa-shopping-cart" /> Cart{' '}
                                 {cartItems.length > 0 &&
                                     `(${cartItems.length})`}{' '}
@@ -58,7 +73,12 @@ const Header = () => {
                                     </NavDropdown>
                                 </>
                             ) : (
-                                <Link className="nav-link" href="/login">
+                                <Link
+                                    className={`nav-link ${
+                                        pathname === '/login' ? 'active' : ''
+                                    }`}
+                                    href="/login"
+                                >
                                     <i className="fas fa-user" /> Sign In
                                 </Link>
                             )}
