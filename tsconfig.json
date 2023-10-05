@@ -25,6 +25,9 @@
       "@constants/*": ["./src/constants/*"],
       "@contexts/*": ["./src/contexts/*"],
       "@core/*": ["./src/core/*"],
+      "@hooks/*": ["./src/core/hooks/*"],
+      "@services/*": ["./src/core/services/*"],
+      "@utils/*": ["./src/core/utils/*"],
       "@types/*": ["./src/types/*"],
       "@pages/*": ["./src/app/(pages)/*"],
     }
