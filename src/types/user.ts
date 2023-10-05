@@ -6,6 +6,8 @@ export interface User {
     password?: string;
 }
 
+export type UserUpdate = Omit<User, 'id'>;
+
 export type UserLoginFields = {
     email: string;
     password: string;
