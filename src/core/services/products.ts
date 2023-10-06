@@ -1,6 +1,6 @@
 'use server';
-import prisma from '@/core/utils/prisma';
 
+import prisma from '@utils/prisma';
 import { IProduct } from '@/types/product';
 
 export const fetchProduct = async (slug: string): Promise<any> => {
@@ -44,4 +44,8 @@ export const fetchProductsList = async (): Promise<IProduct[]> => {
         },
     });
     return products;
+};
+
+export const updateProduct = async (id: number, data: any) => {
+    return await prisma.product.update({ where: { id }, data });
 };
