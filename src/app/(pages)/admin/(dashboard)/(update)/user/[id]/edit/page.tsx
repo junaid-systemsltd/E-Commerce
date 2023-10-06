@@ -4,7 +4,7 @@
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { Form } from 'react-bootstrap';
-import { redirect, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { ChangeEvent, useEffect, useState } from 'react';
 // Modules
 import pick from '@utils/pick';
@@ -13,7 +13,6 @@ import useFetchPrisma from '@hooks/useFetchPrisma';
 import Spinner from '@/components/elements/spinner';
 import { fetchUserById, updateUser } from '@services/users.service';
 import { FormContainer, Message, SubmitButton } from '@/components/elements';
-import { revalidatePath, revalidateTag } from 'next/cache';
 
 type EditUserProps = {
     params: {

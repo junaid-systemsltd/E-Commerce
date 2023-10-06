@@ -1,24 +1,19 @@
 'use client';
 
 // Libs
+import axios from 'axios';
 import Link from 'next/link';
-import { Form, Image } from 'react-bootstrap';
+import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
+import { Form, Image } from 'react-bootstrap';
 import { ChangeEvent, useEffect, useState } from 'react';
 // Modules
 import pick from '@utils/pick';
-import {
-    fetchProduct,
-    updateProduct,
-    uploadProductImage,
-} from '@services/products';
 import useFetchPrisma from '@hooks/useFetchPrisma';
 import Spinner from '@/components/elements/spinner';
+import { fetchProduct, updateProduct } from '@services/products';
 import { FormContainer, SubmitButton } from '@/components/elements';
-import toast from 'react-hot-toast';
 import { UPLOAD_PRODUCT_IMAGE_ENDPOINT } from '@/constants/api-constants';
-import axios from 'axios';
-import extractFormData from '@/core/utils/extractFormData';
 
 type EditProductProps = {
     params: {
