@@ -63,11 +63,8 @@ export default function EditUser({ params: { id } }: EditUserProps) {
             const res = await updateUser(userId, formData);
             if (res) {
                 toast.success('Updated Successfully.');
-                // revalidatePath('/admin/users');
-                // revalidateTag('users'); // Update cached posts
-                // redirect(`/admin/users/${id}`);
                 router.refresh();
-                router.back();
+                router.replace('/admin/users');
             }
         } catch (e) {
             toast.error('Something went wrong!');
